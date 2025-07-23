@@ -1,0 +1,156 @@
+listItems = [
+    {
+        'items': 'Kulkas',
+        'Stock': 10,
+        'Harga': 1000000,
+    },
+    {
+        'items': 'Dispenser',
+        'Stock': 5,
+        'Harga': 750000,
+    },
+    {
+        'items': 'Mesin Cuci',
+        'Stock': 8,
+        'Harga': 950000,
+    },
+]
+
+keranjang = []
+
+def daftarItems():
+    print('Daftar Items\n')
+    print('Index\t| Nama  \t| Stock\t| Harga')
+    for i in range(len(listItems)):
+        print('{}\t| {}  \t| {}\t| {}'.format(i, listItems[i]['items'], listItems[i]['Stock'], listItems[i]['Harga']))
+
+def menu_items():
+    while True:
+        menuItems = int(input('''
+            1. Daftar Menu
+            2. Keranjang
+            3. Bill 
+            4. Kembali ke Menu Utama
+            Masukkan angka Menu yang ingin dijalankan : '''))    
+        if menuItems == 1:
+            while True :
+                daftarItems()
+                pilih = int(input('Masukkan nomor item yang ingin dibeli: '))
+                if 0 <= pilih < len(listItems):
+                    jumlah = int(input(f"Masukkan jumlah {listItems[pilih]['items']} yang ingin dibeli: "))
+                    if jumlah <= listItems[pilih]['Stock']:
+                        listItems[pilih]['Stock'] -= jumlah
+                        keranjang.append({
+                            'item': listItems[pilih]['items'],
+                            'jumlah': jumlah,
+                            'harga': listItems[pilih]['Harga'],
+                            'total': listItems[pilih]['Harga'] * jumlah
+                            })
+                        print(f"{jumlah} {listItems[pilih]['items']} telah ditambahkan ke keranjang.\n")
+                    else:
+                        print("Stock tidak cukup.\n")
+                    lanjut = input("Apakah Ada yang ingin dibeli lagi? (y/n): ").lower()
+                    if lanjut == 'y':
+                        continue
+                    elif lanjut == 'n':
+                        break 
+                    else :
+                        print('invalid input')
+                else:
+                    print("Item tidak valid.\n")
+        elif menuItems == 2:
+            print("\nKeranjang Belanja:\n")
+            if keranjang:
+                for i, item in enumerate(keranjang):
+                    print(f"{i+1}. {item['item']} - Jumlah: {item['jumlah']} - Harga Total: {item['total']}")
+            else:
+                print("Keranjang Anda kosong.\n")
+        elif menuItems == 3:
+            if keranjang:
+                total_belanja = sum(item['total'] for item in keranjang)
+                print(f"\nTotal Belanja: {total_belanja}\n")
+                pembayaran = int(input("Masukkan jumlah uang yang dibayar: "))
+                if pembayaran >= total_belanja:
+                    kembalian = pembayaran - total_belanja
+                    print(f"Pembayaran berhasil. Kembalian: {kembalian}\n")
+                elif pembayaran == total_belanja:
+                    print('Terimakasih atas pembayarannya')
+                else :
+                    pembayaran <= total_belanja
+                    kekurangan = pembayaran - total_belanja
+                    print(f"Uang yang Anda bayar kurang sebanyak: {kekurangan}\n")
+                
+        elif menuItems == 4:
+            print("Kembali ke Menu Utama\n")
+            break
+        else:
+            print("Pilihan tidak valid. Silakan pilih menu yang benar.\n")
+
+def Admin():
+    daftarItems()
+    while True:
+        menuAdmin = int(input('''
+            Menu Admin :
+            1. Menambah Items
+            2. Menghapus items
+            3. Update Barang
+            4. Kembali ke Menu Utama
+            Masukkan angka Menu yang ingin dijalankan : '''))
+
+        if menuAdmin == 1:
+            nama_Items = str(input('Masukkan Nama Item : '))
+            Stock_Items = int(input('Masukkan Jumlah Stock : '))
+            Harga_items = int(input('Masukkan Harga Item : '))
+            listItems.append({
+                    'items': nama_Items,
+                    'Stock': Stock_Items,
+                    'Harga': Harga_items
+                    })
+            print(f"{nama_Items} berhasil ditambahkan.")
+            daftarItems()
+        elif menuAdmin == 2:
+            daftarItems()
+            indexItems = int(input('Masukkan Index Yang Ingin di Hapus : '))
+            if 0 <= indexItems < len(listItems):
+                del listItems[indexItems]
+                print("Item berhasil dihapus.")
+            else:
+                print("Index tidak valid.")
+            daftarItems()
+
+        elif menuAdmin == 3:
+            daftarItems()
+            update_barang = int(input("Masukkan indeks barang yang ingin diupdate: "))
+            if 0 <= update_barang < len(listItems):
+                update_stock = int(input("Masukkan stock barang: "))
+                update_harga = int(input("Masukkan harga barang: "))
+                listItems[update_barang]['Stock'] = update_stock
+                listItems[update_barang]['Harga'] = update_harga
+                print(f"{listItems[update_barang]['items']} berhasil diupdate.")
+            else:
+                print("Index tidak valid.")
+        elif menuAdmin == 4:
+            break
+        else:
+            print("Pilihan tidak valid, coba lagi!")
+
+while True:
+    Input_menu = int(input('''
+        Selamat Datang, Selamat Berbelanja
+                           Kitey Store
+
+        List Menu :
+        1. Menu Items
+        2. Menu Admin
+        3. Exit Program
+
+        Masukkan angka Menu yang ingin dijalankan : '''))
+    if Input_menu == 1:
+        menu_items()
+    elif Input_menu == 2:
+        Admin()
+    elif Input_menu == 3:
+        print("Terimakasih sudah datang berbelanja")
+        break
+    else:
+        print("Pilihan tidak valid, coba lagi!")
